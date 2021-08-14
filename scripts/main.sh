@@ -10,11 +10,14 @@ function install_stage3() {
 
 	prepare_installation_environment
 	apply_disk_configuration
+	eselect profile set 5 # profile select
 	download_stage3
 	extract_stage3
 }
 
 function configure_base_system() {
+	emerge --verbose --update --deep --newuse @world
+	
 	einfo "Generating locales"
 	echo "$LOCALES" > /etc/locale.gen \
 		|| die "Could not write /etc/locale.gen"
@@ -68,8 +71,7 @@ function configure_base_system() {
 
 	# Update environment
 	env_update
-	eselect profile set 5
-	try emerge --ask --verbose --update --deep --newuse @world
+
 }
 
 function configure_portage() {
@@ -91,6 +93,7 @@ function configure_portage() {
 
 		einfo "Adding ~$GENTOO_ARCH to ACCEPT_KEYWORDS"
 		echo "ACCEPT_KEYWORDS=\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf \
+		echo "ACCEPT_LICENSE="*"\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf \
 			|| die "Could not modify /etc/portage/make.conf"
 	fi
 }
@@ -398,7 +401,12 @@ EOF
 	if [[ ${#ADDITIONAL_PACKAGES[@]} -gt 0 ]]; then
 		einfo "Installing additional packages"
 		# shellcheck disable=SC2086
+		try emerge --verbose --update --deep --newuse @world
+		try emerge --verbose wpa_supplicant dhcpcd
+		try emerge --verbose dhcpcd
+		try emerge --verbose linux-firmware
 		try emerge --verbose --autounmask-continue=y -- "${ADDITIONAL_PACKAGES[@]}"
+		
 	fi
 
 	if ask "Do you want to assign a root password now?"; then
