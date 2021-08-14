@@ -12,7 +12,6 @@ function install_stage3() {
 	apply_disk_configuration
 	download_stage3
 	extract_stage3
-        eselect profile set 5 # profile select
 }
 
 function configure_base_system() {
@@ -69,7 +68,6 @@ function configure_base_system() {
 
 	# Update environment
 	env_update
-
 }
 
 function configure_portage() {
@@ -90,7 +88,7 @@ function configure_portage() {
 		try mirrorselect "${mirrorselect_params[@]}"
 
 		einfo "Adding ~$GENTOO_ARCH to ACCEPT_KEYWORDS"
-		echo "ACCEPT_KEYWORDS=\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf
+		echo "ACCEPT_KEYWORDS=\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf \
 			|| die "Could not modify /etc/portage/make.conf"
 	fi
 }
@@ -288,7 +286,6 @@ function main_install_gentoo_in_chroot() {
 
 	# Sync portage
 	einfo "Syncing portage tree"
-        sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
 	try emerge-webrsync
 
 	# Configure basic system things like timezone, locale, ...
@@ -400,7 +397,6 @@ EOF
 		einfo "Installing additional packages"
 		# shellcheck disable=SC2086
 		try emerge --verbose --autounmask-continue=y -- "${ADDITIONAL_PACKAGES[@]}"
-		try emerge --verbose --update --deep --newuse @world
 	fi
 
 	if ask "Do you want to assign a root password now?"; then
