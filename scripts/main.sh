@@ -299,6 +299,7 @@ function main_install_gentoo_in_chroot() {
 	# Install git (for git portage overlays)
 	einfo "Installing git"
 	try emerge --verbose dev-vcs/git
+        sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
 
 	if [[ "$PORTAGE_SYNC_TYPE" == "git" ]]; then
 		mkdir_or_die 0755 "/etc/portage/repos.conf"
@@ -398,12 +399,8 @@ EOF
 	if [[ ${#ADDITIONAL_PACKAGES[@]} -gt 0 ]]; then
 		einfo "Installing additional packages"
 		# shellcheck disable=SC2086
-                sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
-		try emerge --verbose --update --deep --newuse @world
-		try emerge --verbose wpa_supplicant
-		try emerge --verbose linux-firmware
 		try emerge --verbose --autounmask-continue=y -- "${ADDITIONAL_PACKAGES[@]}"
-		
+		try emerge --verbose --update --deep --newuse @world
 	fi
 
 	if ask "Do you want to assign a root password now?"; then
