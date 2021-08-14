@@ -68,6 +68,8 @@ function configure_base_system() {
 
 	# Update environment
 	env_update
+	eselect profile set 5
+	try emerge --ask --verbose --update --deep --newuse @world
 }
 
 function configure_portage() {
