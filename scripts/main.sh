@@ -16,8 +16,6 @@ function install_stage3() {
 }
 
 function configure_base_system() {
-	try emerge --verbose --update --deep --newuse @world
-	
 	einfo "Generating locales"
 	echo "$LOCALES" > /etc/locale.gen \
 		|| die "Could not write /etc/locale.gen"
@@ -92,8 +90,7 @@ function configure_portage() {
 		try mirrorselect "${mirrorselect_params[@]}"
 
 		einfo "Adding ~$GENTOO_ARCH to ACCEPT_KEYWORDS"
-		echo "ACCEPT_KEYWORDS=\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf \
-		echo "ACCEPT_LICENSE="*"\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf \
+		echo "ACCEPT_KEYWORDS=\"~$GENTOO_ARCH\"" >> /etc/portage/make.conf
 			|| die "Could not modify /etc/portage/make.conf"
 	fi
 }
@@ -401,9 +398,9 @@ EOF
 	if [[ ${#ADDITIONAL_PACKAGES[@]} -gt 0 ]]; then
 		einfo "Installing additional packages"
 		# shellcheck disable=SC2086
+                sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
 		try emerge --verbose --update --deep --newuse @world
-		try emerge --verbose wpa_supplicant dhcpcd
-		try emerge --verbose dhcpcd
+		try emerge --verbose wpa_supplicant
 		try emerge --verbose linux-firmware
 		try emerge --verbose --autounmask-continue=y -- "${ADDITIONAL_PACKAGES[@]}"
 		
