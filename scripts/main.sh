@@ -10,9 +10,9 @@ function install_stage3() {
 
 	prepare_installation_environment
 	apply_disk_configuration
-	try eselect profile set 5 # profile select
 	download_stage3
 	extract_stage3
+        eselect profile set 5 # profile select
 }
 
 function configure_base_system() {
