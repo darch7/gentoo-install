@@ -931,3 +931,19 @@ function enable_service() {
 			|| die "Could not add $1 to default services"
 	fi
 }
+
+function perfil_5() {
+	eselect profile set 5 
+		|| die "Could not create perfil '$2'"
+}
+
+function licencias_1() {
+	sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf 
+		|| die "Could not create license '$2'"
+}
+
+
+function emerge_world() {
+	 try emerge --verbose --update --deep --newuse @world
+		|| die "Could not update '$2'"
+}
