@@ -10,13 +10,13 @@ function install_stage3() {
 
 	prepare_installation_environment
 	apply_disk_configuration
-	eselect profile set 5 # profile select
+	try eselect profile set 5 # profile select
 	download_stage3
 	extract_stage3
 }
 
 function configure_base_system() {
-	emerge --verbose --update --deep --newuse @world
+	try emerge --verbose --update --deep --newuse @world
 	
 	einfo "Generating locales"
 	echo "$LOCALES" > /etc/locale.gen \
