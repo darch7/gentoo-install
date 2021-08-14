@@ -288,6 +288,7 @@ function main_install_gentoo_in_chroot() {
 
 	# Sync portage
 	einfo "Syncing portage tree"
+        sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
 	try emerge-webrsync
 
 	# Configure basic system things like timezone, locale, ...
@@ -299,7 +300,6 @@ function main_install_gentoo_in_chroot() {
 	# Install git (for git portage overlays)
 	einfo "Installing git"
 	try emerge --verbose dev-vcs/git
-        sed -i '$a\ACCEPT_LICENSE="*"' /etc/portage/make.conf
 
 	if [[ "$PORTAGE_SYNC_TYPE" == "git" ]]; then
 		mkdir_or_die 0755 "/etc/portage/repos.conf"
