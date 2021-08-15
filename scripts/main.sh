@@ -12,7 +12,6 @@ function install_stage3() {
 	apply_disk_configuration
 	download_stage3
 	extract_stage3
-        perfil_5
 }
 
 function configure_base_system() {
@@ -287,7 +286,6 @@ function main_install_gentoo_in_chroot() {
 
 	# Sync portage
 	einfo "Syncing portage tree"
-        licencias_1
 	try emerge-webrsync
 
 	# Configure basic system things like timezone, locale, ...
@@ -399,8 +397,7 @@ EOF
 		einfo "Installing additional packages"
 		# shellcheck disable=SC2086
 		try emerge --verbose --autounmask-continue=y -- "${ADDITIONAL_PACKAGES[@]}"
-	        emerge_world
-fi
+	fi
 
 	if ask "Do you want to assign a root password now?"; then
 		try passwd root
